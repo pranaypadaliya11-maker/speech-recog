@@ -1,0 +1,47 @@
+{
+  "name": "voicetranscribe-webapp",
+  "version": "1.1.0",
+  "description": "A modern, user-friendly web application that allows users to record their speech via microphone and see the transcribed text instantly.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -o",
+    "dev": "npx live-server . --port=3000",
+    "build": "echo 'No build process needed - vanilla HTML/CSS/JS'",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "speech-recognition",
+    "voice-transcription",
+    "web-speech-api",
+    "javascript",
+    "html5",
+    "css3",
+    "accessibility",
+    "responsive-design"
+  ],
+  "author": "Pranay Padaliya",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "local"
+  },
+  "bugs": {
+    "url": "local"
+  },
+  "homepage": "index.html",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "Chrome >= 25",
+    "Edge >= 79",
+    "Safari >= 14.1"
+  ]
+}

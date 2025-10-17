@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceTranscribe - Speech to Text</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with theme toggle -->
+        <header class="header">
+            <h1 class="app-title">VoiceTranscribe</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+        </header>
+
+        <!-- Main content area -->
+        <main class="main-content">
+            <!-- Mic button container -->
+            <div class="mic-container">
+                <button class="mic-button" id="micButton" aria-label="Start recording">
+                    <div class="mic-icon-container">
+                        <i class="fas fa-microphone" id="micIcon"></i>
+                    </div>
+                    <div class="pulse-ring" id="pulseRing"></div>
+                    <div class="wave-animation" id="waveAnimation"></div>
+                </button>
+
+                <!-- Stop button (hidden initially) -->
+                <button class="stop-button" id="stopButton" aria-label="Stop recording" style="display: none;">
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+                
+                <!-- Recording status -->
+                <div class="recording-status" id="recordingStatus">
+                    <span class="status-text">Click the microphone to start recording</span>
+                </div>
+            </div>
+
+            <!-- Transcription area -->
+            <div class="transcription-container" id="transcriptionContainer" style="display: none;">
+                <div class="transcription-card" id="transcriptionCard">
+                    <div class="transcription-header">
+                        <h3>Transcription</h3>
+                        <button class="copy-button" id="copyButton" aria-label="Copy text to clipboard">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="transcription-text" id="transcriptionText"></div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <p>Click the microphone button to start recording. Press Stop when you are done speaking.</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 VoiceTranscribe. Built with Web Speech API.</p>
+        </footer>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-text" id="toastText"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

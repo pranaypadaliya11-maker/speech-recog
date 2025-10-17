@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceTranscribe - Demo & Features</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .demo-button {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 0.5rem;
+        }
+        
+        .demo-button:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .keyboard-shortcuts {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .shortcut:last-child {
+            border-bottom: none;
+        }
+        
+        kbd {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1 class="app-title">VoiceTranscribe - Demo</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+        </header>
+
+        <main class="demo-container">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Modern Speech-to-Text Web Application</h2>
+                <p style="color: var(--text-secondary); font-size: 1.125rem;">
+                    Transform your speech into text instantly with our intuitive voice transcription tool.
+                </p>
+            </div>
+
+            <div class="demo-actions">
+                <a href="index.html" class="demo-button">
+                    <i class="fas fa-microphone"></i> Launch App
+                </a>
+                <a href="README.md" class="demo-button" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    <i class="fas fa-book"></i> Documentation
+                </a>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="feature-title">Voice Recording</div>
+                    <div class="feature-description">
+                        Click the central mic button and start speaking. Recording stops automatically when you finish.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <div class="feature-title">Real-time Transcription</div>
+                    <div class="feature-description">
+                        See your speech converted to text instantly with high accuracy using Web Speech API.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                    <div class="feature-title">Copy to Clipboard</div>
+                    <div class="feature-description">
+                        One-click copy functionality to easily use your transcribed text anywhere.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="feature-title">Dark/Light Themes</div>
+                    <div class="feature-description">
+                        Switch between beautiful dark and light themes with a single click.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="feature-title">Responsive Design</div>
+                    <div class="feature-description">
+                        Works perfectly on desktop, tablet, and mobile devices with adaptive layouts.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <div class="feature-title">Keyboard Shortcuts</div>
+                    <div class="feature-description">
+                        Full keyboard support for power users with intuitive shortcuts.
+                    </div>
+                </div>
+            </div>
+
+            <div class="keyboard-shortcuts">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">Keyboard Shortcuts</h3>
+                <div class="shortcut">
+                    <span style="color: var(--text-secondary);">Start/Stop Recording</span>
+                    <kbd>Space</kbd>
+                </div>
+                <div class="shortcut">
+                    <span style="color: var(--text-secondary);">Stop Recording</span>
+                    <kbd>Esc</kbd>
+                </div>
+                <div class="shortcut">
+                    <span style="color: var(--text-secondary);">Copy Text</span>
+                    <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin: 2rem 0;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Browser Compatibility</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; text-align: center;">
+                    <div>
+                        <i class="fab fa-chrome" style="font-size: 2rem; color: #4285f4;"></i>
+                        <p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.875rem;">Chrome 25+</p>
+                    </div>
+                    <div>
+                        <i class="fab fa-edge" style="font-size: 2rem; color: #0078d4;"></i>
+                        <p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.875rem;">Edge 79+</p>
+                    </div>
+                    <div>
+                        <i class="fab fa-safari" style="font-size: 2rem; color: #007aff;"></i>
+                        <p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.875rem;">Safari 14.1+</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 3rem 0; padding: 2rem; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color);">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Ready to Get Started?</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Experience the power of voice transcription with our modern, intuitive interface.
+                </p>
+                <a href="index.html" class="demo-button" style="font-size: 1.125rem; padding: 1rem 2.5rem;">
+                    <i class="fas fa-rocket"></i> Launch VoiceTranscribe
+                </a>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 VoiceTranscribe. Built with Web Speech API.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple theme toggle for demo page
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const themeIcon = document.getElementById('themeIcon');
+            if (newTheme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Apply saved theme on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = document.getElementById('themeIcon');
+            if (savedTheme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        });
+    </script>
+</body>
+</html>
