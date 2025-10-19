@@ -1,176 +1,142 @@
-// VoiceTranscribe WebApp - Updated JavaScript
 class VoiceTranscribe {
     constructor() {
         this.isRecording = false;
         this.recognition = null;
         this.currentTheme = localStorage.getItem('theme') || 'light';
-        this.isInitialized = false;
-        
+        this.finalTranscript = '';
+
         // DOM elements
         this.micButton = document.getElementById('micButton');
-        this.micIcon = document.getElementById('micIcon');
-        this.pulseRing = document.getElementById('pulseRing');
-        this.waveAnimation = document.getElementById('waveAnimation');
-        this.recordingStatus = document.getElementById('recordingStatus');
-        this.transcriptionContainer = document.getElementById('transcriptionContainer');
+        this.stopButton = document.getElementById('stopButton');
         this.transcriptionText = document.getElementById('transcriptionText');
         this.copyButton = document.getElementById('copyButton');
+        this.languageSelect = document.getElementById('languageSelect');
         this.themeToggle = document.getElementById('themeToggle');
         this.themeIcon = document.getElementById('themeIcon');
+        this.recordingStatus = document.getElementById('recordingStatus');
         this.toast = document.getElementById('toast');
         this.toastText = document.getElementById('toastText');
-        this.stopButton = document.getElementById('stopButton');
-        
+        this.translateButton = document.getElementById('translateButton');
+        this.targetLanguage = document.getElementById('targetLanguage');
+        this.transcriptionContainer = document.getElementById('transcriptionContainer');
+        this.translateContainer = document.getElementById('translationControls');
+
         this.init();
     }
-    
-    init() {
-        if (this.isInitialized) return;
 
+    init() {
         this.setupSpeechRecognition();
         this.setupEventListeners();
         this.applyTheme();
-        this.isInitialized = true;
-        console.log('VoiceTranscribe initialized successfully');
     }
 
     setupSpeechRecognition() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            this.showError('Speech recognition is not supported in this browser.');
+            this.showToast('Speech recognition not supported in this browser', 'error');
             this.micButton.disabled = true;
             return;
         }
 
         this.recognition = new SpeechRecognition();
-        this.recognition.continuous = false;
-        this.recognition.interimResults = true;
-        this.recognition.lang = 'en-US';
-        this.recognition.maxAlternatives = 1;
+        this.recognition.continuous = true; // continuous listening
+        this.recognition.interimResults = true; // live transcription
+        this.recognition.lang = this.languageSelect.value;
 
-        this.recognition.onstart = () => this.startRecording();
+        this.recognition.onstart = () => {
+            this.isRecording = true;
+            this.micButton.disabled = true;
+            this.stopButton.style.display = 'inline-block';
+            this.updateStatus('Listening... Speak now');
+        };
+
         this.recognition.onresult = (event) => this.handleRecognitionResult(event);
-        this.recognition.onerror = (event) => this.handleRecognitionError(event);
-        this.recognition.onend = () => this.stopRecording();
+
+        this.recognition.onerror = (event) => {
+            console.error('Recognition error:', event.error);
+            this.showToast(`Recognition error: ${event.error}`, 'error');
+        };
+
+        this.recognition.onend = () => {
+            if (this.isRecording) {
+                // Restart automatically if still recording
+                try { this.recognition.start(); } catch (e) { console.error(e); }
+            } else {
+                this.micButton.disabled = false;
+                this.stopButton.style.display = 'none';
+                this.updateStatus('Tap the microphone to start speaking');
+            }
+        };
     }
 
     setupEventListeners() {
-        // Mic button click: start recording
-        this.micButton.addEventListener('click', () => {
-            if (!this.isRecording) {
-                try {
-                    this.recognition.start(); // Directly triggers mic permission
-                } catch (error) {
-                    console.error('Failed to start recording:', error);
-                    this.showError('Could not start recording');
-                }
-            }
+        this.micButton.addEventListener('click', () => this.startRecording());
+        this.stopButton.addEventListener('click', () => this.stopRecording());
+        this.copyButton.addEventListener('click', () => this.copyText(this.transcriptionText));
+        this.translateButton.addEventListener('click', () => this.openGoogleTranslate());
+
+        this.languageSelect.addEventListener('change', () => {
+            if (this.recognition) this.recognition.lang = this.languageSelect.value;
+            this.showToast(`Recognition language set to ${this.languageSelect.value}`);
         });
 
-        // Stop button click
-        this.stopButton.addEventListener('click', () => {
-            if (this.isRecording) {
-                this.recognition.stop();
-            }
-        });
-
-        // Copy button click
-        this.copyButton.addEventListener('click', () => this.copyToClipboard());
-
-        // Theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                if (!this.isRecording) this.recognition.start();
-            }
-            if (e.code === 'Escape' && this.isRecording) this.recognition.stop();
-            if ((e.ctrlKey || e.metaKey) && e.code === 'KeyC' && this.transcriptionContainer.classList.contains('visible')) {
-                e.preventDefault();
-                this.copyToClipboard();
-            }
-        });
     }
 
     startRecording() {
+        if (!this.recognition) return;
         this.isRecording = true;
-
-        // Update UI
-        this.micButton.classList.add('recording');
-        this.recordingStatus.classList.add('recording');
-        this.pulseRing.classList.add('active');
-        this.waveAnimation.classList.add('active');
-        this.updateStatus('Listening... Speak now');
-
-        // Show Stop button
-        this.stopButton.style.display = 'inline-block';
-
-        // Hide transcription area
-        this.transcriptionContainer.classList.remove('visible');
+        this.finalTranscript = ''; // reset for new recording session
         this.transcriptionText.textContent = '';
+        this.transcriptionContainer.classList.remove('visible');
+        this.copyButton.style.display = 'none';
+        this.translateContainer.style.display = 'none';
+        this.recognition.start();
     }
 
     stopRecording() {
-        this.isRecording = false;
-
-        // Update UI
-        this.micButton.classList.remove('recording');
-        this.recordingStatus.classList.remove('recording');
-        this.pulseRing.classList.remove('active');
-        this.waveAnimation.classList.remove('active');
-        this.updateStatus('Tap the microphone to start recording');
-
-        // Hide Stop button
+        this.isRecording = false; // tells onend not to restart
         this.stopButton.style.display = 'none';
+        this.micButton.disabled = false;
+        if (this.recognition) {
+            try { this.recognition.stop(); } catch (e) { console.error(e); }
+        }
     }
 
     handleRecognitionResult(event) {
-        let finalTranscript = '';
         let interimTranscript = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) finalTranscript += transcript;
-            else interimTranscript += transcript;
+            if (event.results[i].isFinal) {
+                this.finalTranscript += transcript + ' ';
+            } else {
+                interimTranscript += transcript;
+            }
         }
 
-        const displayText = finalTranscript || interimTranscript;
-        if (displayText) {
-            this.transcriptionText.textContent = displayText;
-            this.transcriptionContainer.style.display = 'block';
+        this.transcriptionText.textContent = this.finalTranscript + interimTranscript;
+
+        // Show copy & translate buttons if any text exists
+        if (this.finalTranscript.trim() || interimTranscript.trim()) {
             this.transcriptionContainer.classList.add('visible');
+            this.copyButton.style.display = 'inline-block';
+            this.translateContainer.style.display = 'flex';
         }
-
-        if (finalTranscript) this.showToast('Recording completed!');
     }
 
-    handleRecognitionError(event) {
-        console.error('Recognition error:', event.error);
-        switch (event.error) {
-            case 'no-speech':
-                this.showError('No speech detected. Please try again.');
-                break;
-            case 'audio-capture':
-            case 'not-allowed':
-                this.showError('Microphone access denied. Please enable microphone permissions.');
-                this.micButton.disabled = true;
-                break;
-            default:
-                this.showError(`Recognition error: ${event.error}`);
-        }
-        this.stopRecording();
+    copyText(element) {
+        const text = element.textContent;
+        if (!text.trim()) return this.showToast('No text to copy', 'error');
+        navigator.clipboard.writeText(text).then(() => this.showToast('Text copied!'));
     }
 
-    copyToClipboard() {
-        const text = this.transcriptionText.textContent;
-        if (!text) return this.showError('No text to copy');
-
-        navigator.clipboard.writeText(text).then(() => {
-            this.showToast('Text copied!');
-            this.copyButton.innerHTML = '<i class="fas fa-check"></i>';
-            setTimeout(() => this.copyButton.innerHTML = '<i class="fas fa-copy"></i>', 2000);
-        }).catch(() => this.showError('Failed to copy text.'));
+    openGoogleTranslate() {
+        const text = this.finalTranscript.trim();
+        if (!text) return this.showToast('No text to translate', 'error');
+        const target = this.targetLanguage.value;
+        const url = `https://translate.google.com/?sl=auto&tl=${target}&text=${encodeURIComponent(text)}&op=translate`;
+        const win = window.open(url, '_blank');
+        if (win) win.focus();
     }
 
     toggleTheme() {
@@ -188,19 +154,13 @@ class VoiceTranscribe {
         this.recordingStatus.querySelector('.status-text').textContent = message;
     }
 
-    showToast(message) {
+    showToast(message, type = 'success') {
         this.toastText.textContent = message;
-        this.toast.className = 'toast show';
+        this.toast.className = `toast show ${type}`;
         setTimeout(() => this.toast.classList.remove('show'), 3000);
-    }
-
-    showError(message) {
-        this.showToast(message);
-        console.error(message);
     }
 }
 
-// Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     new VoiceTranscribe();
 });
